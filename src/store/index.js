@@ -19,6 +19,7 @@ export default new Vuex.Store({
   },
   actions: {
     cName: function({commit}){
+      
       commit('changeName');
     }
   },
