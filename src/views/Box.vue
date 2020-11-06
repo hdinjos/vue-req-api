@@ -1,49 +1,24 @@
 <template>
   <div>
     <v-container class="grey lighten-5">
-      <!-- <v-row class="mb-6" no-gutters>
-        <v-col class="mb-6" sm="6" md="8" cols="12">
-          <v-card class="pa-2" outlined tile>
-            Col 1 {{ $store.state.num }}</v-card
-          >
-        </v-col>
-        <v-col sm="6" md="4" cols="12">
-          <v-card class="pa-2" outlined tile> Col 2 </v-card>
-        </v-col>
-      </v-row>
-
-      <v-row class="mb-6" no-gutters>
-        <v-col class="mb-6" sm="4" md="10" cols="6">
-          <v-card class="pa-2" outlined tile> Col 1 </v-card>
-        </v-col>
-        <v-col sm="4" md="2" cols="6">
-          <v-card class="pa-2" outlined tile> Col 2 </v-card>
-        </v-col>
-      </v-row> -->
-
-      <!-- <v-row no-gutters>
-        <v-col v-for="n in 3" :key="n" cols="sm">
-          <v-card class="pa-2" outlined tile> col </v-card>
-        </v-col>
-      </v-row> -->
       <v-text-field
+        v-model="newTask"
         label="Masukkan Tugas"
-        :rules="rules"
         hide-details="auto"
       ></v-text-field>
       <v-row justify="center" align="center">
         <v-col>
-          <v-btn @click="displayUser" depressed color="primary"> Get Users </v-btn>
+          <v-btn @click="postTask" depressed color="primary"> Tambah Tugas </v-btn>
         </v-col>
       </v-row>
 
       <v-list>
       <v-list-item
-        v-for="user in users"
-        :key="user.id"
+        v-for="task in tasks"
+        :key="task.id"
       >
         <v-list-item-content>
-          <v-list-item-title >{{user.website}}</v-list-item-title>
+          <v-list-item-title >{{task.title}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -60,14 +35,23 @@ export default {
       items: [
         'Makan', "Ngegame"
         ],
-      users: []
+      tasks: [],
+      newTask: ''
     }
   },
   methods: {
      displayUser: async function(){
-      let getUser = await axios.get('https://jsonplaceholder.typicode.com/users');
-      let data = await getUser.data;
-      this.users = data;
+      let getTasks = await axios.get('http://192.168.1.26:3000/tasks');
+      let data = await getTasks.data;
+      this.tasks = data;
+      console.log(data);
+    },
+    postTask: async function(){
+      let task = {
+        title: this.newTask
+      }
+      await axios.post('http://192.168.1.26:3000/task/add', task);
+      this.displayUser();
     }
   },
   created: function(){
